@@ -28,4 +28,8 @@ protected:
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
+public:
+	// 初始化腺癌树的相关信息
+	void InitAdenocarcinomaTree();
+	afx_msg void OnNMClickTree1(NMHDR *pNMHDR, LRESULT *pResult);
 };

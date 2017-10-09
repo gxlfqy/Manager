@@ -30,6 +30,7 @@ void CManagerDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CManagerDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
+	ON_NOTIFY(NM_CLICK, IDC_TREE1, &CManagerDlg::OnNMClickTree1)
 END_MESSAGE_MAP()
 
 
@@ -45,6 +46,7 @@ BOOL CManagerDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO:  在此添加额外的初始化代码
+	InitAdenocarcinomaTree();
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -85,3 +87,37 @@ HCURSOR CManagerDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+// 初始化腺癌树的相关信息
+void CManagerDlg::InitAdenocarcinomaTree()
+{
+	CTreeCtrl * pTreeCtrl = (CTreeCtrl *)GetDlgItem(IDC_TREE1);
+	HTREEITEM T001 = pTreeCtrl->InsertItem(_T("浸润前病变"));
+	HTREEITEM T011 = pTreeCtrl->InsertItem(_T("非典型腺瘤样增生"), T001);
+	HTREEITEM T012 = pTreeCtrl->InsertItem(_T("原位腺癌"), T001);
+	HTREEITEM T121 = pTreeCtrl->InsertItem(_T("非黏液性"), T012);
+	HTREEITEM T122 = pTreeCtrl->InsertItem(_T("黏液性"), T012);
+	HTREEITEM T123 = pTreeCtrl->InsertItem(_T("混合性"), T012);
+	HTREEITEM T002 = pTreeCtrl->InsertItem(_T("微浸润腺癌"));
+	pTreeCtrl->InsertItem(_T("非黏液性"), T002);
+	pTreeCtrl->InsertItem(_T("黏液性"), T002);
+	pTreeCtrl->InsertItem(_T("混合性"), T002);
+	HTREEITEM T3 = pTreeCtrl->InsertItem(_T("浸润性腺癌"));
+	pTreeCtrl->InsertItem(_T("伏壁生长为主"), T3);
+	pTreeCtrl->InsertItem(_T("腺泡为主"), T3);
+	pTreeCtrl->InsertItem(_T("乳头状"), T3);
+	pTreeCtrl->InsertItem(_T("微小乳头为主"), T3);
+	pTreeCtrl->InsertItem(_T("实体为主伴粘液蛋白分泌"), T3);
+	HTREEITEM T4 = pTreeCtrl->InsertItem(_T("浸润性变异"));
+	pTreeCtrl->InsertItem(_T("黏液性"), T4);
+	pTreeCtrl->InsertItem(_T("胶质样"), T4);
+	pTreeCtrl->InsertItem(_T("胎儿型"), T4);
+	pTreeCtrl->InsertItem(_T("肠腺癌"), T4);
+}
+
+
+void CManagerDlg::OnNMClickTree1(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	*pResult = 0;
+	CTreeCtrl * pTreeCtrl = (CTreeCtrl *)GetDlgItem(IDC_TREE1);
+	pTreeCtrl->GetSelectedItem();
+}
