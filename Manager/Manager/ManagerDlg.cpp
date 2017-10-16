@@ -33,6 +33,7 @@ BEGIN_MESSAGE_MAP(CManagerDlg, CDialogEx)
 	ON_NOTIFY(NM_CLICK, IDC_TREE1, &CManagerDlg::OnNMClickTree1)
 	ON_WM_VSCROLL()
 	ON_WM_ERASEBKGND()
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -51,6 +52,27 @@ BOOL CManagerDlg::OnInitDialog()
 	InitAdenocarcinomaTree();
 	initScrollbar();
 	//MoveWindow()
+
+	//////////////////////////////////////////////////////////////////////////
+	CRect rect;
+	GetClientRect(&rect);     //取客户区大小    
+	old.x = rect.right - rect.left;
+	old.y = rect.bottom - rect.top;
+	//////////////////////////////////////////////////////////////////////////
+	//CRect rect;
+	::GetWindowRect(m_hWnd, rect);//这里m_hWnd为窗口句柄，如果不存在此变量则在该行代码前加一句：HWND h_Wnd=GetSafeHwnd( );  
+	ScreenToClient(rect);
+	LONG m_nDlgWidth = rect.right - rect.left;
+	LONG m_nDlgHeight = rect.bottom - rect.top;
+	//Calc 分辨率  
+	LONG m_nWidth = GetSystemMetrics(SM_CXSCREEN);
+	LONG m_nHeight = GetSystemMetrics(SM_CYSCREEN);
+	//计算放大倍数(要用float值，否则误差很大)  
+	m_Multiple_width = float(m_nWidth) / float(m_nDlgWidth);
+	m_Multiple_height = float(m_nHeight) / float(m_nDlgHeight);
+	change_flag = TRUE;//用来判断OnSize执行时，OninitDialg是否已经执行了
+	//////////////////////////////////////////////////////////////////////////
+
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -232,4 +254,78 @@ BOOL CManagerDlg::OnEraseBkgnd(CDC* pDC)
 	//这里一定要用return true，如果用自动生成的，会调用基类，把画出来的覆盖，就什     么结果也没有了
 
 	//return CDialogEx::OnEraseBkgnd(pDC);
+}
+
+
+void CManagerDlg::ReSize()
+{
+	float fsp[2];
+	POINT Newp; //获取现在对话框的大小  
+	CRect recta;
+	GetClientRect(&recta);     //取客户区大小    
+	Newp.x = recta.right - recta.left;
+	Newp.y = recta.bottom - recta.top;
+	fsp[0] = (float)Newp.x / old.x;
+	fsp[1] = (float)Newp.y / old.y;
+	CRect Rect;
+	int woc;
+	CPoint OldTLPoint, TLPoint; //左上角  
+	CPoint OldBRPoint, BRPoint; //右下角  
+	HWND  hwndChild = ::GetWindow(m_hWnd, GW_CHILD);  //列出所有控件    
+	while (hwndChild)
+	{
+		woc = ::GetDlgCtrlID(hwndChild);//取得ID  
+		GetDlgItem(woc)->GetWindowRect(Rect);
+		ScreenToClient(Rect);
+		OldTLPoint = Rect.TopLeft();
+		TLPoint.x = long(OldTLPoint.x*fsp[0]);
+		//TLPoint.y = long(OldTLPoint.y*fsp[1]);
+		TLPoint.y = long(OldTLPoint.y);
+		OldBRPoint = Rect.BottomRight();
+		BRPoint.x = long(OldBRPoint.x *fsp[0]);
+		//BRPoint.y = long(OldBRPoint.y *fsp[1]);
+		BRPoint.y = long(OldBRPoint.y);
+		Rect.SetRect(TLPoint, BRPoint);
+		GetDlgItem(woc)->MoveWindow(Rect, TRUE);
+		hwndChild = ::GetWindow(hwndChild, GW_HWNDNEXT);
+	}
+	old = Newp;
+}
+
+
+void CManagerDlg::MyReSize(int nID)
+{
+	CRect Rect;
+	CWnd * pWnd = GetDlgItem(nID);
+	pWnd->GetWindowRect(&Rect);
+	ScreenToClient(Rect);
+	//计算控件左上角点   
+	CPoint OldTLPoint, TLPoint;
+	OldTLPoint = Rect.TopLeft();
+	TLPoint.x = long(OldTLPoint.x *m_Multiple_width);
+	TLPoint.y = long(OldTLPoint.y * m_Multiple_height);
+	//计算控件右下角点   
+	CPoint OldBRPoint, BRPoint; OldBRPoint = Rect.BottomRight();
+	BRPoint.x = long(OldBRPoint.x *m_Multiple_width);
+	BRPoint.y = long(OldBRPoint.y * m_Multiple_height);
+	//移动控件到新矩形   
+	Rect.SetRect(TLPoint, BRPoint);
+	GetDlgItem(nID)->MoveWindow(Rect, TRUE);
+}
+
+void CManagerDlg::OnSize(UINT nType, int cx, int cy)
+{
+	CDialog::OnSize(nType, cx, cy);
+
+	// TODO: Add your message handler code here  
+	if (nType == SIZE_RESTORED || nType == SIZE_MAXIMIZED)
+	{
+		ReSize();
+	}
+// 	if (change_flag)//如果OninitDlg已经调用完毕  
+// 	{
+// 		MyReSize(IDC_STATIC);
+// 		m_Multiple_width = float(1) / m_Multiple_width;
+// 		m_Multiple_height = float(1) / m_Multiple_height;
+// 	}
 }

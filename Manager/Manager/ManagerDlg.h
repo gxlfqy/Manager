@@ -36,4 +36,11 @@ public:
 	afx_msg void OnNMClickTree1(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
+	void ReSize();
+	void MyReSize(int nID);
+	BOOL change_flag;
+	float m_Multiple_height;
+	float m_Multiple_width;
+	POINT old;
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };

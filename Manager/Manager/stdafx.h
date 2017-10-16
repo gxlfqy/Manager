@@ -32,7 +32,8 @@
 
 #include <afxcontrolbars.h>     // 功能区和控件条的 MFC 支持
 
-
+//皮肤宏
+//#define _SKIN_
 
 
 

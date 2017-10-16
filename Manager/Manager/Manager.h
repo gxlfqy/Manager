@@ -27,6 +27,12 @@ public:
 // й╣ож
 
 	DECLARE_MESSAGE_MAP()
+	virtual int ExitInstance();
 };
 
 extern CManagerApp theApp;
+
+#if defined(_SKIN_)
+#include "SkinPPWTL.h"
+#pragma comment(lib, "SkinPPWTL.lib")
+#endif
