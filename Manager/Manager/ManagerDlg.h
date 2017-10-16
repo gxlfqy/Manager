@@ -31,5 +31,9 @@ protected:
 public:
 	// 初始化腺癌树的相关信息
 	void InitAdenocarcinomaTree();
+	//初始化初始滚动条
+	void initScrollbar();
 	afx_msg void OnNMClickTree1(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 };
