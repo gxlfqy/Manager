@@ -59,19 +59,6 @@ BOOL CManagerDlg::OnInitDialog()
 	old.x = rect.right - rect.left;
 	old.y = rect.bottom - rect.top;
 	//////////////////////////////////////////////////////////////////////////
-	//CRect rect;
-	::GetWindowRect(m_hWnd, rect);//这里m_hWnd为窗口句柄，如果不存在此变量则在该行代码前加一句：HWND h_Wnd=GetSafeHwnd( );  
-	ScreenToClient(rect);
-	LONG m_nDlgWidth = rect.right - rect.left;
-	LONG m_nDlgHeight = rect.bottom - rect.top;
-	//Calc 分辨率  
-	LONG m_nWidth = GetSystemMetrics(SM_CXSCREEN);
-	LONG m_nHeight = GetSystemMetrics(SM_CYSCREEN);
-	//计算放大倍数(要用float值，否则误差很大)  
-	m_Multiple_width = float(m_nWidth) / float(m_nDlgWidth);
-	m_Multiple_height = float(m_nHeight) / float(m_nDlgHeight);
-	change_flag = TRUE;//用来判断OnSize执行时，OninitDialg是否已经执行了
-	//////////////////////////////////////////////////////////////////////////
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -260,6 +247,20 @@ BOOL CManagerDlg::OnEraseBkgnd(CDC* pDC)
 void CManagerDlg::ReSize()
 {
 	float fsp[2];
+	int ExID[13];
+	ExID[0] = IDC_BASEINFO_STATIC;
+	ExID[1] = IDC_CTCHECK_STATIC;
+	ExID[2] = IDC_PNR_STATIC;
+	ExID[3] = IDC_OLD_STATIC;
+	ExID[4] = IDC_CHEST_EXAMINATION_STATIC;
+	ExID[5] = IDC_SURGERY_STATIC;
+	ExID[6] = IDC_PATHOLOGY_RESULTS_STATIC;
+	ExID[7] = IDC_PATHOLOGY_ADENOCARCINOMA_STATIC;
+	ExID[8] = IDC_PATHOLOGY_ISOI_STATIC;
+	ExID[9] = IDC_PATHOLOGY_FOUNDIFNO_STATIC;
+	ExID[10] = IDC_IMMUNOHISTOCHEMISTRY_STATIC;
+	ExID[11] = IDC_GENETIC_TESTING_STATIC;
+	ExID[12] = IDC_FOLLOW_UP_RECORDS_STATIC;
 	POINT Newp; //获取现在对话框的大小  
 	CRect recta;
 	GetClientRect(&recta);     //取客户区大小    
@@ -271,46 +272,37 @@ void CManagerDlg::ReSize()
 	int woc;
 	CPoint OldTLPoint, TLPoint; //左上角  
 	CPoint OldBRPoint, BRPoint; //右下角  
-	HWND  hwndChild = ::GetWindow(m_hWnd, GW_CHILD);  //列出所有控件    
+	HWND  hwndChild = ::GetWindow(m_hWnd, GW_CHILD);  //列出所有控件 
+	bool isExID = false;
+	int i;
 	while (hwndChild)
 	{
-		woc = ::GetDlgCtrlID(hwndChild);//取得ID  
+		woc = ::GetDlgCtrlID(hwndChild);//取得ID
+		for (i = 0, isExID = false; i < 13; ++i)
+		{
+			if (woc == ExID[i])
+			{
+				isExID = true;
+				break;
+			}
+		}
 		GetDlgItem(woc)->GetWindowRect(Rect);
 		ScreenToClient(Rect);
 		OldTLPoint = Rect.TopLeft();
 		TLPoint.x = long(OldTLPoint.x*fsp[0]);
-		//TLPoint.y = long(OldTLPoint.y*fsp[1]);
-		TLPoint.y = long(OldTLPoint.y);
+		TLPoint.y = long(OldTLPoint.y*fsp[1]);
 		OldBRPoint = Rect.BottomRight();
 		BRPoint.x = long(OldBRPoint.x *fsp[0]);
 		//BRPoint.y = long(OldBRPoint.y *fsp[1]);
-		BRPoint.y = long(OldBRPoint.y);
+		if (isExID)
+			BRPoint.y = long(OldBRPoint.y *fsp[1]);
+		else
+			BRPoint.y = long(TLPoint.y + OldBRPoint.y - OldTLPoint.y);
 		Rect.SetRect(TLPoint, BRPoint);
 		GetDlgItem(woc)->MoveWindow(Rect, TRUE);
 		hwndChild = ::GetWindow(hwndChild, GW_HWNDNEXT);
 	}
 	old = Newp;
-}
-
-
-void CManagerDlg::MyReSize(int nID)
-{
-	CRect Rect;
-	CWnd * pWnd = GetDlgItem(nID);
-	pWnd->GetWindowRect(&Rect);
-	ScreenToClient(Rect);
-	//计算控件左上角点   
-	CPoint OldTLPoint, TLPoint;
-	OldTLPoint = Rect.TopLeft();
-	TLPoint.x = long(OldTLPoint.x *m_Multiple_width);
-	TLPoint.y = long(OldTLPoint.y * m_Multiple_height);
-	//计算控件右下角点   
-	CPoint OldBRPoint, BRPoint; OldBRPoint = Rect.BottomRight();
-	BRPoint.x = long(OldBRPoint.x *m_Multiple_width);
-	BRPoint.y = long(OldBRPoint.y * m_Multiple_height);
-	//移动控件到新矩形   
-	Rect.SetRect(TLPoint, BRPoint);
-	GetDlgItem(nID)->MoveWindow(Rect, TRUE);
 }
 
 void CManagerDlg::OnSize(UINT nType, int cx, int cy)
