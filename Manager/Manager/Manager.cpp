@@ -71,9 +71,15 @@ BOOL CManagerApp::InitInstance()
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
-	CManagerDlg dlg;
-	m_pMainWnd = &dlg;
-	INT_PTR nResponse = dlg.DoModal();
+// 	CManagerDlg dlg;
+// 	m_pMainWnd = &dlg;
+	CBasicInfoDlg dlg1;
+	INT_PTR nResponse = dlg1.DoModal();
+	CBodyCheckDlg dlg2;
+	nResponse = dlg2.DoModal();
+	CPathologyDlg dlg3;
+	nResponse = dlg3.DoModal();
+
 	if (nResponse == IDOK)
 	{
 		// TODO:  在此放置处理何时用
