@@ -40,6 +40,7 @@ public:
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	void ReSize();
 	void RestoreGroup();
+	void NewRestoreGroup();
 	POINT old;
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnSizing(UINT fwSide, LPRECT pRect);

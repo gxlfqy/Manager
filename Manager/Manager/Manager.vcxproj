@@ -104,6 +104,7 @@
     <ClInclude Include="EasySize.h" />
     <ClInclude Include="Manager.h" />
     <ClInclude Include="ManagerDlg.h" />
+    <ClInclude Include="MyList.h" />
     <ClInclude Include="PathologyDlg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />

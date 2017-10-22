@@ -1,10 +1,14 @@
-﻿生成启动时间为 2017/10/21 22:01:16。
+﻿生成启动时间为 2017/10/22 21:15:56。
      1>项目“D:\Manager\Manager\Manager\Manager.vcxproj”在节点 2 上(Build 个目标)。
      1>ClCompile:
          D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _WINDOWS /D _DEBUG /D _MBCS /Gm /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Debug\Manager.pch" /Fo"Debug\\" /Fd"Debug\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt ManagerDlg.cpp
          ManagerDlg.cpp
-     1>d:\manager\manager\manager\managerdlg.cpp(422): warning C4018: “>”: 有符号/无符号不匹配
-     1>d:\manager\manager\manager\managerdlg.cpp(442): warning C4018: “>=”: 有符号/无符号不匹配
+     1>d:\manager\manager\manager\managerdlg.cpp(434): warning C4018: “>”: 有符号/无符号不匹配
+     1>d:\manager\manager\manager\managerdlg.cpp(454): warning C4018: “>=”: 有符号/无符号不匹配
+     1>d:\manager\manager\manager\managerdlg.cpp(705): warning C4244: “*=”: 从“float”转换到“LONG”，可能丢失数据
+     1>d:\manager\manager\manager\managerdlg.cpp(706): warning C4244: “*=”: 从“float”转换到“LONG”，可能丢失数据
+     1>d:\manager\manager\manager\managerdlg.cpp(709): warning C4244: “*=”: 从“float”转换到“LONG”，可能丢失数据
+     1>d:\manager\manager\manager\managerdlg.cpp(710): warning C4244: “*=”: 从“float”转换到“LONG”，可能丢失数据
        Link:
          D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\Manager\Manager\Debug\Manager.exe" /INCREMENTAL /NOLOGO opencv_ml249d.lib opencv_calib3d249d.lib opencv_contrib249d.lib opencv_core249d.lib opencv_features2d249d.lib opencv_flann249d.lib opencv_gpu249d.lib opencv_highgui249d.lib opencv_imgproc249d.lib opencv_legacy249d.lib opencv_objdetect249d.lib opencv_ts249d.lib opencv_video249d.lib opencv_nonfree249d.lib opencv_ocl249d.lib opencv_photo249d.lib opencv_stitching249d.lib opencv_superres249d.lib opencv_videostab249d.lib opencv_objdetect249.lib opencv_ts249.lib opencv_video249.lib opencv_nonfree249.lib opencv_ocl249.lib opencv_photo249.lib opencv_stitching249.lib opencv_superres249.lib opencv_videostab249.lib opencv_calib3d249.lib opencv_contrib249.lib opencv_core249.lib opencv_features2d249.lib opencv_flann249.lib opencv_gpu249.lib opencv_highgui249.lib opencv_imgproc249.lib opencv_legacy249.lib opencv_ml249.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:"D:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\Include\Manifest\dpiaware.manifest" /DEBUG /PDB:"D:\Manager\Manager\Debug\Manager.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\Manager\Manager\Debug\Manager.lib" /MACHINE:X86 Debug\Manager.res
          Debug\BasicInfoDlg.obj
@@ -18,4 +22,4 @@
 
 生成成功。
 
-已用时间 00:00:07.27
+已用时间 00:00:01.76

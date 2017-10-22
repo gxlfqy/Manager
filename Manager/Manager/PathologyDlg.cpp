@@ -85,6 +85,6 @@ void CPathologyDlg::OnBnClickedMfcmenubutton1()
 	CString m_szAde;
 	CMenu * pMenu = new CMenu;
 	pMenu->LoadMenu(IDR_MENU2);
-	pMenu->GetSubMenu(0)->GetMenuStringW(m_menuBottomCtrl.m_nMenuResult, m_szAde, MF_BYCOMMAND);
+	pMenu->GetSubMenu(0)->GetMenuString(m_menuBottomCtrl.m_nMenuResult, m_szAde, MF_BYCOMMAND);
 	SetDlgItemText(IDC_MFCMENUBUTTON_STATIC, m_szAde);
 }
