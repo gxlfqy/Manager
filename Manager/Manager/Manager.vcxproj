@@ -101,6 +101,7 @@
   <ItemGroup>
     <ClInclude Include="BasicInfoDlg.h" />
     <ClInclude Include="BodyCheckDlg.h" />
+    <ClInclude Include="EasySize.h" />
     <ClInclude Include="Manager.h" />
     <ClInclude Include="ManagerDlg.h" />
     <ClInclude Include="PathologyDlg.h" />

@@ -24,6 +24,7 @@ CPathologyDlg::~CPathologyDlg()
 void CPathologyDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_MFCMENUBUTTON1, m_menuBottomCtrl);
 }
 
 
@@ -54,6 +55,7 @@ void CPathologyDlg::InitAdenocarcinomaTree()
 }
 
 BEGIN_MESSAGE_MAP(CPathologyDlg, CDialogEx)
+	ON_BN_CLICKED(IDC_MFCMENUBUTTON1, &CPathologyDlg::OnBnClickedMfcmenubutton1)
 END_MESSAGE_MAP()
 
 
@@ -66,7 +68,23 @@ BOOL CPathologyDlg::OnInitDialog()
 
 	// TODO:  在此添加额外的初始化
 	//初始化 腺癌树
-	InitAdenocarcinomaTree();
+	//InitAdenocarcinomaTree();
+	CMenu* pMenu = new CMenu;
+	pMenu->LoadMenu(IDR_MENU2); //载入菜单资源
+	m_menuBottomCtrl.m_hMenu = pMenu->GetSubMenu(0)->GetSafeHmenu();
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常:  OCX 属性页应返回 FALSE
+}
+
+
+void CPathologyDlg::OnBnClickedMfcmenubutton1()
+{
+	if (m_menuBottomCtrl.m_nMenuResult == 0)
+		return;
+
+	CString m_szAde;
+	CMenu * pMenu = new CMenu;
+	pMenu->LoadMenu(IDR_MENU2);
+	pMenu->GetSubMenu(0)->GetMenuStringW(m_menuBottomCtrl.m_nMenuResult, m_szAde, MF_BYCOMMAND);
+	SetDlgItemText(IDC_MFCMENUBUTTON_STATIC, m_szAde);
 }

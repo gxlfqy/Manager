@@ -1,4 +1,5 @@
 #pragma once
+#include "afxmenubutton.h"
 
 
 // CPathologyDlg ¶Ô»°¿ò
@@ -20,4 +21,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual BOOL OnInitDialog();
+	CMFCMenuButton m_menuBottomCtrl;
+	afx_msg void OnBnClickedMfcmenubutton1();
 };

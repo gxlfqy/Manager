@@ -3,11 +3,13 @@
 //
 
 #pragma once
+#include "EasySize.h"
 
 
 // CManagerDlg 对话框
 class CManagerDlg : public CDialogEx
 {
+	DECLARE_EASYSIZE
 // 构造
 public:
 	CManagerDlg(CWnd* pParent = NULL);	// 标准构造函数
@@ -37,6 +39,8 @@ public:
 	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	void ReSize();
+	void RestoreGroup();
 	POINT old;
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg void OnSizing(UINT fwSide, LPRECT pRect);
 };
