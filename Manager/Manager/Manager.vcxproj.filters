@@ -33,19 +33,22 @@
     <ClInclude Include="Resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="BasicInfoDlg.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="BodyCheckDlg.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="PathologyDlg.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="EasySize.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="MyList.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="FindDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="EasyFound.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="EasyStaticCtrlConnect.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DataIDDlg.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -59,13 +62,10 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="BasicInfoDlg.cpp">
+    <ClCompile Include="FindDlg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="BodyCheckDlg.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="PathologyDlg.cpp">
+    <ClCompile Include="DataIDDlg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

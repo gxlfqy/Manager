@@ -9,9 +9,8 @@
 #endif
 
 #include "resource.h"		// 主符号
-#include "BasicInfoDlg.h"
-#include "BodyCheckDlg.h"
-#include "PathologyDlg.h"
+#include "FindDlg.h"
+#include "DataIDDlg.h"
 
 // CManagerApp: 
 // 有关此类的实现，请参阅 Manager.cpp

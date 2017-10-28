@@ -5,6 +5,7 @@
 #include "stdafx.h"
 #include "Manager.h"
 #include "ManagerDlg.h"
+#include "FindDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
