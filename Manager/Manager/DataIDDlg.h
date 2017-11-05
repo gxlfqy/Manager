@@ -26,4 +26,5 @@ public:
 	CListBox m_listCtrl;
 	afx_msg void OnBnClickedOuttxt();
 	afx_msg void OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2);
+	virtual void OnOK();
 };

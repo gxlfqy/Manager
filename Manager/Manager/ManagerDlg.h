@@ -7,6 +7,8 @@
 #include "afxmenubutton.h"
 #include "EasyStaticCtrlConnect.h"
 
+
+
 // CManagerDlg ¶Ô»°¿ò
 class CManagerDlg : public CDialogEx
 {
@@ -44,8 +46,9 @@ public:
 	POINT old;
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnSizing(UINT fwSide, LPRECT pRect);
-	CMFCMenuButton m_menuBottomCtrl;
+	CMFCMenuButton m_ADEMenuBottomCtrl;
 	afx_msg void OnConditionQueryMenu();
-	CMFCMenuButton m_MFCMenuGlandCtrl;
+	CMFCMenuButton m_GLANDMenuBottomCtrl;
 	afx_msg void OnOutputDataid();
+	afx_msg void OnBnClickedPathologyMfcmenubutton();
 };

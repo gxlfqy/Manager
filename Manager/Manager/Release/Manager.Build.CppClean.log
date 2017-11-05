@@ -1,12 +1,10 @@
-d:\manager\manager\manager\release\manager.pch
 d:\manager\manager\manager\release\vc120.pdb
-d:\manager\manager\manager\release\stdafx.obj
-d:\manager\manager\manager\release\pathologydlg.obj
+d:\manager\manager\manager\release\finddlg.obj
 d:\manager\manager\manager\release\managerdlg.obj
 d:\manager\manager\manager\release\manager.obj
-d:\manager\manager\manager\release\bodycheckdlg.obj
-d:\manager\manager\manager\release\basicinfodlg.obj
-d:\manager\manager\manager\release\finddlg.obj
+d:\manager\manager\manager\release\manager.pch
+d:\manager\manager\manager\release\stdafx.obj
+d:\manager\manager\manager\release\dataiddlg.obj
 d:\manager\manager\release\manager.exe
 d:\manager\manager\release\manager.pdb
 d:\manager\manager\manager\release\manager.res

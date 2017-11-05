@@ -1,9 +1,18 @@
 #pragma once
 #include "afxmenubutton.h"
-#include "EasyFound.h"
-
+#include "EasyStaticCtrlConnect.h"
+#include "afxvslistbox.h"
 
 // CFindDlg ¶Ô»°¿ò
+
+struct _FindInfo
+{
+	CString title;
+	CString data;
+	int IDName;
+};
+
+
 
 class CFindDlg : public CDialogEx
 {
@@ -25,6 +34,11 @@ public:
 	virtual BOOL OnInitDialog();
 	CMFCMenuButton m_MFCMenu1Ctrl;
 	CMFCMenuButton m_MFCMenu2Ctrl;
-
+	std::vector<tag_ef_connect> * ControlInfo;
+	std::vector<_FindInfo> m_FindInfo;
+	CMenu * m_pFineMenu;
+	void SetControlInfo(std::vector<tag_ef_connect> * _controlInfo);
 	afx_msg void OnBnClickedMfcmenu1();
+	void InitMenuInfo();
+	CVSListBox m_ListBoxCtrl;
 };

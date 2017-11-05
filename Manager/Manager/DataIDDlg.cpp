@@ -89,3 +89,10 @@ void CDataIDDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
 	}
 	CDialogEx::OnHotKey(nHotKeyId, nKey1, nKey2);
 }
+
+void CDataIDDlg::OnOK()
+{
+	// TODO:  在此添加专用代码和/或调用基类
+
+	//CDialogEx::OnOK();
+}
