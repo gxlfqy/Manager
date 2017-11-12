@@ -40,5 +40,7 @@ public:
 	void SetControlInfo(std::vector<tag_ef_connect> * _controlInfo);
 	afx_msg void OnBnClickedMfcmenu1();
 	void InitMenuInfo();
+	void OnlyAgreeNo(int nID);
+	void BanInputMethod(int nID);
 	CVSListBox m_ListBoxCtrl;
 };

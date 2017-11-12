@@ -2,10 +2,13 @@
 #ifndef __EASYSTATICCTRLCONNECT_H__
 #define __EASYSTATICCTRLCONNECT_H__
 #include "stdafx.h"
+#include "DynamicMenu.h"
 
 #include <vector>
 #include <iostream>
 #include <assert.h>
+
+#define ES_ONLYINPUTNO 0x4000L
 
 namespace ControlType
 {
@@ -92,6 +95,7 @@ struct tag_ef_connect
 	std::vector<CString> MenuInfo;
 	int nTable = 0;
 	HMENU hMenu = NULL;
+	CDynamicMenu * MFCMenuInfo = nullptr;
 	tag_ef_connect() { }
 	tag_ef_connect(int _staticID, int _ctrlID, int _ctrlName) :staticID(_staticID), ctrlID(_ctrlID), ctrlName(_ctrlName) { }
 	void SetData(int _staticID, int _ctrlID, int _ctrlName){ staticID = _staticID, ctrlID = _ctrlID, ctrlName = _ctrlName; }
@@ -103,50 +107,101 @@ struct tag_ef_connect
 
 #define DECLARE_EASYSTATICCTRLCONNECT \
 	std::vector<tag_ef_connect> __EF__StaticCtrl; \
-	void __EF__ConnectStaticCtrl();
+	void __EF__ConnectStaticCtrl(); \
+	void __EF__UpdateControlPosition(bool bFlag);
 
 #define BEGIN_EASYSTATICCTRLCONNECT_MAP(class) \
+	void class::__EF__UpdateControlPosition(bool bFlag) \
+	{ \
+		static std::vector<int> StaticCtrlDistance; \
+		CRect StaticRect, ControlRect; \
+		int nCountor = __EF__StaticCtrl.size(); \
+		if(bFlag) \
+		{ \
+			for (int i = 0; i < nCountor; ++i) \
+			{ \
+				GetDlgItem(__EF__StaticCtrl.at(i).staticID)->GetWindowRect(StaticRect); \
+				GetDlgItem(__EF__StaticCtrl.at(i).ctrlID)->GetWindowRect(ControlRect); \
+				StaticCtrlDistance.push_back(ControlRect.left - StaticRect.left); \
+			} \
+		} \
+		else \
+		{ \
+			int wide = 0; \
+			for (int i = 0; i < nCountor; ++i) \
+			{ \
+				GetDlgItem(__EF__StaticCtrl.at(i).staticID)->GetWindowRect(StaticRect); \
+				ScreenToClient(StaticRect); \
+				GetDlgItem(__EF__StaticCtrl.at(i).ctrlID)->GetWindowRect(ControlRect); \
+				ScreenToClient(ControlRect); \
+				wide = StaticRect.right - StaticRect.left; \
+				StaticRect.left = ControlRect.left - StaticCtrlDistance.at(i); \
+				StaticRect.right = StaticRect.left + wide; \
+				GetDlgItem(__EF__StaticCtrl.at(i).staticID)->MoveWindow(StaticRect.left, StaticRect.top, StaticRect.right - StaticRect.left, StaticRect.bottom - StaticRect.top, FALSE); \
+			} \
+		} \
+		Invalidate(); \
+		UpdateWindow(); \
+	} \
 	void class::__EF__ConnectStaticCtrl() \
-{ \
-	tag_ef_connect temp; \
-	CString str; \
-	int nCount; \
+	{ \
+		tag_ef_connect temp; \
+		CString str; \
+		int nCount; \
 
 #define ESCC_CONNECT(staticID, ctrlID, ctrlName, attribute) \
-	temp.SetData(staticID, ctrlID, ctrlName); \
-	temp.IDName.Format(L""##L#ctrlID); \
-	temp.IDName = temp.IDName.Mid(4, temp.IDName.GetLength()); \
-	GetDlgItem(staticID)->GetWindowText(str); \
-	str.TrimRight(_T("£º")); \
-	temp.SetTitle(str); \
-	temp.MenuInfo.clear(); \
-	temp.hMenu = NULL; \
-	if (ctrlName == ControlType::ComboBox) \
-	{ \
-		nCount = ((CComboBox *)GetDlgItem(ctrlID))->GetCount(); \
-		for (int i = 0; i < nCount; ++i) \
+		temp.SetData(staticID, ctrlID, ctrlName); \
+		temp.IDName.Format(L""##L#ctrlID); \
+		temp.IDName = temp.IDName.Mid(4, temp.IDName.GetLength()); \
+		GetDlgItem(staticID)->GetWindowText(str); \
+		str.TrimRight(_T("£º")); \
+		temp.SetTitle(str); \
+		temp.MenuInfo.clear(); \
+		temp.hMenu = NULL; \
+		if (ctrlName == ControlType::ComboBox) \
 		{ \
-			((CComboBox *)GetDlgItem(ctrlID))->GetLBText(i, str); \
-			temp.MenuInfo.push_back(str); \
+			nCount = ((CComboBox *)GetDlgItem(ctrlID))->GetCount(); \
+			for (int i = 0; i < nCount; ++i) \
+			{ \
+				((CComboBox *)GetDlgItem(ctrlID))->GetLBText(i, str); \
+				temp.MenuInfo.push_back(str); \
+			} \
 		} \
-	} \
-	if (ctrlName == ControlType::MFCMenuButtonControl) \
-	{ \
-		temp.hMenu = HMENU(attribute); \
-		temp.SetAttr(0); \
-	} \
-	else \
-	{ \
-		temp.SetAttr(int(attribute)); \
-	} \
-	temp.nTable = g_DataType.GetTableIndex(temp.IDName); \
-	assert(temp.nTable != -1); \
-	__EF__StaticCtrl.push_back(temp);
+		if (ctrlName == ControlType::MFCMenuButtonControl) \
+		{ \
+			temp.hMenu = HMENU(attribute); \
+			temp.SetAttr(0); \
+		} \
+		else \
+		{ \
+			temp.SetAttr(int(attribute)); \
+		} \
+		temp.nTable = g_DataType.GetTableIndex(temp.IDName); \
+		assert(temp.nTable != -1); \
+		__EF__StaticCtrl.push_back(temp);
 
 #define END_EASYSTATICCTRLCONNECT_MAP \
-}
+	}
 
-#define CONNECTSTATICCTRL __EF__ConnectStaticCtrl()
+#define ESCC_CONNECT_MFCMENU(staticID, ctrlID, ctrlName, DMenuInfo)  \
+		temp.SetData(staticID, ctrlID, ctrlName); \
+		temp.IDName.Format(L""##L#ctrlID); \
+		temp.IDName = temp.IDName.Mid(4, temp.IDName.GetLength()); \
+		GetDlgItem(staticID)->GetWindowText(str); \
+		str.TrimRight(_T("£º")); \
+		temp.SetTitle(str); \
+		temp.MenuInfo.clear(); \
+		temp.hMenu = NULL; \
+		temp.MFCMenuInfo = new CDynamicMenu; \
+		if (temp.MFCMenuInfo == nullptr) exit(1); \
+		*(temp.MFCMenuInfo) = DMenuInfo; \
+		temp.nTable = g_DataType.GetTableIndex(temp.IDName); \
+		assert(temp.nTable != -1); \
+		__EF__StaticCtrl.push_back(temp);
+	 
+#define CONNECTSTATICCTRL __EF__ConnectStaticCtrl();__EF__UpdateControlPosition(TRUE)
+
+#define UPDATECONTROLPOSITION __EF__UpdateControlPosition(FALSE)
 
 #endif // !__EASYSTATICCTRLCONNECT_H__
 

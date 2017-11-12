@@ -42,13 +42,19 @@
     <ClInclude Include="FindDlg.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="EasyFound.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="EasyStaticCtrlConnect.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="DataIDDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="BinaryTree.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicMenu.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="MyMFCMenuButton.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -66,6 +72,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="DataIDDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicMenu.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MyMFCMenuButton.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

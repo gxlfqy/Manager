@@ -3,9 +3,10 @@
 
 #include "stdafx.h"
 #include "Manager.h"
+#include "ManagerDlg.h"
 #include "FindDlg.h"
 #include "afxdialogex.h"
-
+#include <imm.h>
 
 // CFindDlg ¶Ô»°¿ò
 
@@ -116,4 +117,14 @@ void CFindDlg::InitMenuInfo()
 	for (i = 0; i < 10; ++i)
 		pP->AppendMenu(MF_POPUP, (UINT)(pPopupMenu[i]).m_hMenu, g_DataType.TableName[i]);
 	m_pFineMenu = pMenu;
+}
+
+void CFindDlg::OnlyAgreeNo(int nID)
+{
+	EC_OnlyAgreeNo(nID);
+}
+
+void CFindDlg::BanInputMethod(int nID)
+{
+	EC_BanInputMethod(nID);
 }

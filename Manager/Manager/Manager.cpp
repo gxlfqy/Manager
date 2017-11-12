@@ -11,6 +11,7 @@
 #define new DEBUG_NEW
 #endif
 
+#include "BinaryTree.h"
 
 // CManagerApp
 
@@ -35,6 +36,14 @@ CManagerApp::CManagerApp()
 
 CManagerApp theApp;
 
+void TestTemplate()
+{
+	CBinaryTree<CString> BTree(L"尼玛，有毒");
+	BTree.Right();
+	BTree.Set(L"卧槽");
+	const CString * temp = BTree.Get();
+	return;
+}
 
 // CManagerApp 初始化
 
@@ -71,17 +80,19 @@ BOOL CManagerApp::InitInstance()
 	// TODO:  应适当修改该字符串，
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
-
+	//TestTemplate();
 	CManagerDlg dlg;
+	INT_PTR nResponse;
+	//goto End;
 	m_pMainWnd = &dlg;
-	INT_PTR nResponse = dlg.DoModal();
+	nResponse = dlg.DoModal();
 // 	CBasicInfoDlg dlg1;
 // 	INT_PTR nResponse = dlg1.DoModal();
 // 	CBodyCheckDlg dlg2;
 // 	nResponse = dlg2.DoModal();
 // 	CPathologyDlg dlg3;
 // 	nResponse = dlg3.DoModal();
-
+	nResponse = IDOK;
 	if (nResponse == IDOK)
 	{
 		// TODO:  在此放置处理何时用
