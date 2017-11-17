@@ -94,3 +94,16 @@ if(t != ES_KEEPSIZE) __ES__CalcBottomRight(this,TRUE,bottom,top,id,b,id##_es_b,r
 GetDlgItem(id)->MoveWindow(left,top,right-left,bottom-top,FALSE);\
 }
 #endif //__EASYSIZE_H_
+
+// ES_BORDER代表控件与边框的距离保持不变
+// ES_KEEPSIZE代表控件的宽度和高度保持不变，left / right只能设置其中一个为ES_KEEPSIZE, top / bottom亦然。
+// Control  ID代表以另一个空间为参照
+// 具体注释如下，待设置控件记为ID1，参照控件记为ID2
+// i left = ID2  ID1左边到ID2右边的距离保持不变（不管ID2如何变化）
+// ii right = ID2 ID1右边到ID2左边的距离保持不变（不管ID2如何变化）
+// iii top = ID2  ID1上边到ID2下边的距离保持不变（不管ID2如何变化）
+// iv bottom = ID2 ID1下边到ID2上边的距离保持不变（不管ID2如何变化）
+// options-- - 特别操作ES_HCENTER, ES_VCENTER and 0的结合。
+// 0代表没有任何操作；
+// ES_HCENTER代表控件在left / right之间水平居中，此时left / right都不能设置成ES_KEEPSIZE，控件的宽度保持不变；
+// ES_VCENTER同理ES_HCENTER

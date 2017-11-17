@@ -57,6 +57,9 @@
     <ClInclude Include="MyMFCMenuButton.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="PatientDirectoryDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Manager.cpp">
@@ -78,6 +81,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="MyMFCMenuButton.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="PatientDirectoryDlg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

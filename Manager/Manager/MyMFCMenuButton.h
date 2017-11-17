@@ -10,4 +10,3 @@ public:
 	~CMyMFCMenuButton();
 	virtual void CreateDynamicMenu();
 };
-

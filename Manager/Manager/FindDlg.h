@@ -1,7 +1,9 @@
 #pragma once
 #include "afxmenubutton.h"
 #include "EasyStaticCtrlConnect.h"
+#include "MyMFCMenuButton.h"
 #include "afxvslistbox.h"
+#include "afxcmn.h"
 
 // CFindDlg ¶Ô»°¿ò
 
@@ -30,17 +32,20 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	/*DECLARE_EASYFOUND*/
-	virtual BOOL OnInitDialog();
-	CMFCMenuButton m_MFCMenu1Ctrl;
-	CMFCMenuButton m_MFCMenu2Ctrl;
+	CMyMFCMenuButton m_OptionsMenuCtrl;
+	CMyMFCMenuButton m_MFCMenu2Ctrl;
 	std::vector<tag_ef_connect> * ControlInfo;
 	std::vector<_FindInfo> m_FindInfo;
 	CMenu * m_pFineMenu;
+	CListCtrl m_FoundListCtrl;
+public:
+	/*DECLARE_EASYFOUND*/
+	virtual BOOL OnInitDialog();
+	
 	void SetControlInfo(std::vector<tag_ef_connect> * _controlInfo);
 	afx_msg void OnBnClickedMfcmenu1();
-	void InitMenuInfo();
+	void InitOptionsMenu();
 	void OnlyAgreeNo(int nID);
 	void BanInputMethod(int nID);
-	CVSListBox m_ListBoxCtrl;
+	
 };

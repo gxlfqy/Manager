@@ -3,11 +3,8 @@
 //
 
 #include "stdafx.h"
-#include "Manager.h"
 #include "ManagerDlg.h"
 #include "afxdialogex.h"
-#include <imm.h>
-#include <stack>
 
 
 #ifdef _DEBUG
@@ -22,7 +19,9 @@ CManagerDlg::CManagerDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CManagerDlg::IDD, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	m_ManagerData.clear();
 }
+
 
 void CManagerDlg::DoDataExchange(CDataExchange* pDX)
 {
@@ -30,6 +29,7 @@ void CManagerDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_PATHOLOGY_ADENOCARCINOMA, m_ADEMenuBottomCtrl);
 	DDX_Control(pDX, IDC_SURGERY_GLAND, m_GLANDMenuBottomCtrl);
 }
+
 
 BEGIN_MESSAGE_MAP(CManagerDlg, CDialogEx)
 	ON_WM_PAINT()
@@ -46,26 +46,15 @@ BEGIN_MESSAGE_MAP(CManagerDlg, CDialogEx)
 	ON_EN_CHANGE(IDC_CTCHECK_CTNO, &CManagerDlg::OnEnChangeCtcheckCtno)
 	ON_EN_CHANGE(IDC_PATHOLOGY_NO, &CManagerDlg::OnEnChangePathologyNo)
 	ON_EN_CHANGE(IDC_FOLLOW_UP_RECORDS_CT_NO, &CManagerDlg::OnEnChangeFollowUpRecordsCtNo)
+	ON_COMMAND(IDR_SAVEDATA_MENU, &CManagerDlg::OnSavedataMenu)
+	ON_WM_HOTKEY()
 END_MESSAGE_MAP()
-
-// ES_BORDER代表控件与边框的距离保持不变
-// ES_KEEPSIZE代表控件的宽度和高度保持不变，left / right只能设置其中一个为ES_KEEPSIZE, top / bottom亦然。
-// Control  ID代表以另一个空间为参照
-// 具体注释如下，待设置控件记为ID1，参照控件记为ID2
-// i left = ID2  ID1左边到ID2右边的距离保持不变（不管ID2如何变化）
-// ii right = ID2 ID1右边到ID2左边的距离保持不变（不管ID2如何变化）
-// iii top = ID2  ID1上边到ID2下边的距离保持不变（不管ID2如何变化）
-// iv bottom = ID2 ID1下边到ID2上边的距离保持不变（不管ID2如何变化）
-// options-- - 特别操作ES_HCENTER, ES_VCENTER and 0的结合。
-// 0代表没有任何操作；
-// ES_HCENTER代表控件在left / right之间水平居中，此时left / right都不能设置成ES_KEEPSIZE，控件的宽度保持不变；
-// ES_VCENTER同理ES_HCENTER
 
 BEGIN_EASYSTATICCTRLCONNECT_MAP(CManagerDlg)
 	//Basic Info Static 
 	ESCC_CONNECT(IDC_NAME_STATIC, IDC_BASICINFO_NAME, ControlType::Edit, 0)
 	ESCC_CONNECT(IDC_SEX_STATIC, IDC_BASICINFO_SEX,  ControlType::ComboBox, 0)
-	ESCC_CONNECT(IDC_AGE_STATIC, IDC_BASICINFO_AGE, ControlType::Edit, 0)
+	ESCC_CONNECT(IDC_AGE_STATIC, IDC_BASICINFO_AGE, ControlType::Edit, ES_NUMBER)
 	ESCC_CONNECT(IDC_SMOKEYEAR_STATIC, IDC_BASICINFO_SMOKEYEAR,  ControlType::ComboBox, 0)
 	ESCC_CONNECT(IDC_SMOKENUM_STATIC, IDC_BASICINFO_SMOKENUM, ControlType::Edit, ES_NUMBER)
 	ESCC_CONNECT(IDC_SYMPTOM_STATIC, IDC_BASICINFO_SYMPTOM, ControlType::ComboBox, 0)
@@ -83,14 +72,12 @@ BEGIN_EASYSTATICCTRLCONNECT_MAP(CManagerDlg)
 	ESCC_CONNECT(IDC_DIABETES_STATIC, IDC_BASICINFO_DIABETES, ControlType::ComboBox, 0)
 	ESCC_CONNECT(IDC_NEPHROPATHY_STATIC, IDC_BASICINFO_NEPHROPATHY, ControlType::ComboBox, 0)
 	ESCC_CONNECT(IDC_OSMH_STATIC, IDC_BASICINFO_OSMH, ControlType::Edit, 0)
-
 	//CT check Static
 	ESCC_CONNECT(IDC_CTNO_STATIC, IDC_CTCHECK_CTNO, ControlType::Edit, ES_ONLYINPUTNO)
 	ESCC_CONNECT(IDC_CTDATE_STATIC, IDC_CTCHECK_CTDATE, ControlType::DateTimePicker, 0)
 	ESCC_CONNECT(IDC_CTRAISE_STATIC, IDC_CTCHECK_CTRAISE, ControlType::ComboBox, 0)
 	ESCC_CONNECT(IDC_MACHINENAME_STATIC, IDC_CTCHECK_MACHINENAME, ControlType::ComboBox, 0)
 	ESCC_CONNECT(IDC_SCANNING_SLICE_STATIC, IDC_CTCHECK_SCANNING_SLICE, ControlType::Edit, ES_NUMBER)
-
 	//PNR Static
 	ESCC_CONNECT(IDC_MAJOR_AXIS_STATIC, IDC_PNR_MAJOR_AXIS, ControlType::Edit, ES_NUMBER)
 	ESCC_CONNECT(IDC_MINOR_AXIS_STATIC, IDC_PNR_MINOR_AXIS, ControlType::Edit, ES_NUMBER)
@@ -104,7 +91,6 @@ BEGIN_EASYSTATICCTRLCONNECT_MAP(CManagerDlg)
 	ESCC_CONNECT(IDC_RAG_STATIC, IDC_PNR_RAG, ControlType::ComboBox, 0)
 	ESCC_CONNECT(IDC_LEAFLET_STATIC, IDC_PNR_LEAFLET, ControlType::ComboBox, 0)
 	ESCC_CONNECT(IDC_PRE_STATIC, IDC_PNR_PRE, ControlType::Edit, 0)
-
 	//OLD Static 
 	ESCC_CONNECT(IDC_EMPHYSEMA2_STATIC, IDC_OLD_EMPHYSEMA2, ControlType::ComboBox, 0)
 	ESCC_CONNECT(IDC_IPF_STATIC, IDC_OLD_IPF, ControlType::ComboBox, 0)
@@ -112,7 +98,6 @@ BEGIN_EASYSTATICCTRLCONNECT_MAP(CManagerDlg)
 	ESCC_CONNECT(IDC_OPTUBE_STATIC, IDC_OLD_OPTUBE, ControlType::ComboBox, 0)
 	ESCC_CONNECT(IDC_CAOFTHEP_STATIC, IDC_OLD_CAOFTHEP, ControlType::ComboBox, 0)
 	ESCC_CONNECT(IDC_PLEURAL_EFFUSION_STATIC, IDC_OLD_PLEURAL_EFFUSION, ControlType::ComboBox, 0)
-
 	//EXCHECK Static 
 	ESCC_CONNECT(IDC_BTMWE_STATIC, IDC_EXCHECK_BTMWE, ControlType::ComboBox, 0)
 	ESCC_CONNECT(IDC_PFE_STATIC, IDC_EXCHECK_PFE, ControlType::ComboBox, 0)
@@ -125,13 +110,11 @@ BEGIN_EASYSTATICCTRLCONNECT_MAP(CManagerDlg)
 	ESCC_CONNECT(IDC_EX2_STATIC, IDC_EXCHECK_EX2, ControlType::Edit, 0)
 	ESCC_CONNECT(IDC_LYMPH_GLAND_STATIC, IDC_EXCHECK_LYMPH_GLAND, ControlType::ComboBox, 0)
 	ESCC_CONNECT(IDC_TRANSFER_STATIC, IDC_EXCHECK_TRANSFER, ControlType::ComboBox, 0)
-
 	//SURGERY Static
 	ESCC_CONNECT(IDC_SURGERY_DATE_STATIC, IDC_SURGERY_DATE, ControlType::DateTimePicker, 0)
 	ESCC_CONNECT(IDC_SURGERY_TIME_STATIC, IDC_SURGERY_TIME, ControlType::Edit, ES_NUMBER)
 	ESCC_CONNECT(IDC_SURGERY_NAME_STATIC, IDC_SURGERY_NAME, ControlType::ComboBox, 0)
-	ESCC_CONNECT_MFCMENU(IDC_LYMPH_GLAND_2_STATIC, IDC_SURGERY_GLAND, ControlType::MFCMenuButtonControl, m_GLANDMenuBottomCtrl)
-
+	ESCC_CONNECT_MFCMENU(IDC_LYMPH_GLAND_2_STATIC, IDC_SURGERY_GLAND, ControlType::MFCMenuButtonControl, m_GLANDMenuBottomCtrl, 0)
 	//PATHOLOGY Static
 	ESCC_CONNECT(IDC_PATHOLOGY_NO_STATIC, IDC_PATHOLOGY_NO, ControlType::Edit, ES_ONLYINPUTNO)
 	ESCC_CONNECT(IDC_PATHOLOGY_DATE_STATIC, IDC_PATHOLOGY_DATE, ControlType::DateTimePicker, 0)
@@ -143,7 +126,7 @@ BEGIN_EASYSTATICCTRLCONNECT_MAP(CManagerDlg)
 	//
 	ESCC_CONNECT(IDC_PATHOLOGY_BIM_STATIC, IDC_PATHOLOGY_BIM, ControlType::ComboBox, 0)
 	ESCC_CONNECT(IDC_PATHOLOGY_VCE_STATIC, IDC_PATHOLOGY_VCE, ControlType::ComboBox, 0)
-	ESCC_CONNECT_MFCMENU(IDC_PATHOLOGY_ADENOCARCINOMA_STATIC, IDC_PATHOLOGY_ADENOCARCINOMA, ControlType::MFCMenuButtonControl, m_ADEMenuBottomCtrl)
+	ESCC_CONNECT_MFCMENU(IDC_PATHOLOGY_ADENOCARCINOMA_STATIC, IDC_PATHOLOGY_ADENOCARCINOMA, ControlType::MFCMenuButtonControl, m_ADEMenuBottomCtrl, 0)
 	ESCC_CONNECT(IDC_PATHOLOGY_VLD_STATIC, IDC_PATHOLOGY_VLD, ControlType::ComboBox, 0)
 	ESCC_CONNECT(IDC_PATHOLOGY_LIGAMENT_STATIC, IDC_PATHOLOGY_LIGAMENT, ControlType::ComboBox, 0)
 	ESCC_CONNECT(IDC_PATHOLOGY_NERVE_STATIC, IDC_PATHOLOGY_NERVE, ControlType::ComboBox, 0)
@@ -154,8 +137,6 @@ BEGIN_EASYSTATICCTRLCONNECT_MAP(CManagerDlg)
 	ESCC_CONNECT(IDC_PATHOLOGY_INFLAMMATION_STATIC, IDC_PATHOLOGY_INFLAMMATION, ControlType::ComboBox, 0)
 	ESCC_CONNECT(IDC_PATHOLOGY_INFO1_STATIC, IDC_PATHOLOGY_INFO1, ControlType::Edit, 0)
 	ESCC_CONNECT(IDC_PATHOLOGY_PATHOLOGICAL_STAGE_STATIC, IDC_PATHOLOGY_PATHOLOGICAL_STAGE, ControlType::Edit, 0)
-	//
-
 	//IMMUNOHISTOCHEMISTRY Static
 	ESCC_CONNECT(IDC_IMMUNOHISTOCHEMISTRY_EGFR_STATIC, IDC_IMMUNOHISTOCHEMISTRY_EGFR, ControlType::ComboBox, 0)
 	ESCC_CONNECT(IDC_IMMUNOHISTOCHEMISTRY_CK7_STATIC, IDC_IMMUNOHISTOCHEMISTRY_CK7, ControlType::ComboBox, 0)
@@ -166,11 +147,9 @@ BEGIN_EASYSTATICCTRLCONNECT_MAP(CManagerDlg)
 	ESCC_CONNECT(IDC_IMMUNOHISTOCHEMISTRY_KI67_STATIC, IDC_IMMUNOHISTOCHEMISTRY_KI67, ControlType::ComboBox, 0)
 	ESCC_CONNECT(IDC_IMMUNOHISTOCHEMISTRY_NASPIN_A_STATIC, IDC_IMMUNOHISTOCHEMISTRY_NASPIN_A, ControlType::ComboBox, 0)
 	ESCC_CONNECT(IDC_IMMUNOHISTOCHEMISTRY_P63_STATIC, IDC_IMMUNOHISTOCHEMISTRY_P63, ControlType::ComboBox, 0)
-	
 	//GENETIC_TESTING Static
 	ESCC_CONNECT(IDC_GENETIC_TESTING_1_STATIC, IDC_GENETIC_TESTING, ControlType::ComboBox, 0)
 	ESCC_CONNECT(IDC_GENETIC_TESTING_BML4_ALK_STATIC, IDC_GENETIC_TESTING_BML4_ALK, ControlType::ComboBox, 0)
-
 	//FOLLOW_UP_RECORDS Static
 	ESCC_CONNECT(IDC_FOLLOW_UP_RECORDS_CT_NO_STATIC, IDC_FOLLOW_UP_RECORDS_CT_NO, ControlType::Edit, ES_ONLYINPUTNO)
 	ESCC_CONNECT(IDC_FOLLOW_UP_RECORDS_DATE_STATIC, IDC_FOLLOW_UP_RECORDS_DATE, ControlType::DateTimePicker, 0)
@@ -178,7 +157,8 @@ BEGIN_EASYSTATICCTRLCONNECT_MAP(CManagerDlg)
 	ESCC_CONNECT(IDC_FOLLOW_UP_RECORDS_SITUATION_STATIC, IDC_FOLLOW_UP_RECORDS_SITUATION, ControlType::ComboBox, 0)
 	ESCC_CONNECT(IDC_FOLLOW_UP_RECORDS_AFTERTREATMENT_STATIC, IDC_FOLLOW_UP_RECORDS_AFTERTREATMENT, ControlType::ComboBox, 0)
 	ESCC_CONNECT(IDC_FOLLOW_UP_RECORDS_CHEMOTHERAPY_STATIC, IDC_FOLLOW_UP_RECORDS_CHEMOTHERAPY, ControlType::ComboBox, 0)
-
+	//MHID Static
+	ESCC_CONNECT(IDC_BASICINFO_MHID_STATIC, IDC_BASICINFO_MHID, ControlType::Edit, ES_ONLYINPUTNO)
 END_EASYSTATICCTRLCONNECT_MAP
 
 // BEGIN_EASYSIZE_MAP(CManagerDlg)
@@ -366,6 +346,8 @@ BOOL CManagerDlg::OnInitDialog()
 	BanInputMethod(IDC_CTCHECK_CTNO);
 	BanInputMethod(IDC_PATHOLOGY_NO);
 	BanInputMethod(IDC_FOLLOW_UP_RECORDS_CT_NO);
+	//////////////////////////////////////////////////////////////////////////
+	::RegisterHotKey(GetSafeHwnd(), IDR_SAVEDATA_MENU, MOD_CONTROL, 'S');
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -447,6 +429,7 @@ void CManagerDlg::initScrollbar()
 	scrollinfo.nMax = 75;     //设置滚动条的最大位置0--75
 	SetScrollInfo(SB_VERT, &scrollinfo, SIF_ALL);
 }
+
 
 void CManagerDlg::OnNMClickTree1(NMHDR *pNMHDR, LRESULT *pResult)
 {
@@ -550,6 +533,7 @@ BOOL CManagerDlg::OnEraseBkgnd(CDC* pDC)
  	return CDialogEx::OnEraseBkgnd(pDC);
 }
 
+
 void CManagerDlg::RestoreGroup()
 {
 	static int nCounter = 0;
@@ -637,6 +621,7 @@ void CManagerDlg::RestoreGroup()
 	Invalidate(); UpdateWindow();
 }
 
+
 void CManagerDlg::OnSize(UINT nType, int cx, int cy)
 {
 	CDialog::OnSize(nType, cx, cy);
@@ -695,63 +680,47 @@ void CManagerDlg::OnBnClickedPathologyMfcmenubutton()
 	}
 }
 
-#define SetMenuInfoTemp(i, t) \
-	temp.title = L##t; \
-	temp.nID = 0x##i; \
-	list.push_back(temp)
 
 void CManagerDlg::InitADEMenuBottomCtrl()
 {
-	CBinaryTree<_menuInfo> * pMenuInfo = &m_ADEMenuBottomCtrl.m_menuInfobTree;
-	std::vector<_menuInfo> list;
-	_menuInfo temp;
-	SetMenuInfoTemp(010000, "浸润前病变");
-	SetMenuInfoTemp(010100, "非典型腺瘤样增生");
-	SetMenuInfoTemp(010200, "原位腺癌");
-	SetMenuInfoTemp(010201, "非黏液性");
-	SetMenuInfoTemp(010202, "黏液性");
-	SetMenuInfoTemp(010203, "混合性");
-	SetMenuInfoTemp(020000, "微浸润腺癌");
-	SetMenuInfoTemp(020100, "非黏液性");
-	SetMenuInfoTemp(020200, "黏液性");
-	SetMenuInfoTemp(020300, "混合性");
-	SetMenuInfoTemp(030000, "浸润性腺癌");
-	SetMenuInfoTemp(030100, "伏壁生长为主");
-	SetMenuInfoTemp(030200, "腺泡为主");
-	SetMenuInfoTemp(030300, "乳头状");
-	SetMenuInfoTemp(030400, "微小乳头为主");
-	SetMenuInfoTemp(030500, "实体为主伴粘液蛋白分泌");
-	SetMenuInfoTemp(040000, "浸润性变异");
-	SetMenuInfoTemp(040100, "黏液性");
-	SetMenuInfoTemp(040200, "胶质样");
-	SetMenuInfoTemp(040300, "胎儿型");
-	SetMenuInfoTemp(040400, "肠腺癌");
-	int list_len = list.size();
-	for (int i = 0; i < list_len; ++i)
-		SetMenuInfoBTree(list.at(i), pMenuInfo);
-	m_ADEMenuBottomCtrl.CreateDynamicMenu();
+	EC_InitDynamicMenu(m_ADEMenuBottomCtrl);
+	EC_SetMenuInfo(010000, "浸润前病变");
+	EC_SetMenuInfo(010100, "非典型腺瘤样增生");
+	EC_SetMenuInfo(010200, "原位腺癌");
+	EC_SetMenuInfo(010201, "非黏液性");
+	EC_SetMenuInfo(010202, "黏液性");
+	EC_SetMenuInfo(010203, "混合性");
+	EC_SetMenuInfo(020000, "微浸润腺癌");
+	EC_SetMenuInfo(020100, "非黏液性");
+	EC_SetMenuInfo(020200, "黏液性");
+	EC_SetMenuInfo(020300, "混合性");
+	EC_SetMenuInfo(030000, "浸润性腺癌");
+	EC_SetMenuInfo(030100, "伏壁生长为主");
+	EC_SetMenuInfo(030200, "腺泡为主");
+	EC_SetMenuInfo(030300, "乳头状");
+	EC_SetMenuInfo(030400, "微小乳头为主");
+	EC_SetMenuInfo(030500, "实体为主伴粘液蛋白分泌");
+	EC_SetMenuInfo(040000, "浸润性变异");
+	EC_SetMenuInfo(040100, "黏液性");
+	EC_SetMenuInfo(040200, "胶质样");
+	EC_SetMenuInfo(040300, "胎儿型");
+	EC_SetMenuInfo(040400, "肠腺癌");
+	EC_BuildDynamicMenu;
 }
-
 
 
 void CManagerDlg::InitGLANDMenuBottomCtrl()
 {
-	CBinaryTree<_menuInfo> * pMenuInfo = &m_GLANDMenuBottomCtrl.m_menuInfobTree;
-	std::vector<_menuInfo> list;
-	_menuInfo temp;
-	SetMenuInfoTemp(0100, "活检");
-	SetMenuInfoTemp(0101, "阳性");
-	SetMenuInfoTemp(0102, "阴性");
-	SetMenuInfoTemp(0200, "清扫");
-	SetMenuInfoTemp(0201, "阳性");
-	SetMenuInfoTemp(0202, "阴性");
-	int list_len = list.size();
-	for (int i = 0; i < list_len; ++i)
-		SetMenuInfoBTree(list.at(i), pMenuInfo);
-	m_GLANDMenuBottomCtrl.CreateDynamicMenu();
+	EC_InitDynamicMenu(m_GLANDMenuBottomCtrl);
+	EC_SetMenuInfo(0100, "活检");
+	EC_SetMenuInfo(0101, "阳性");
+	EC_SetMenuInfo(0102, "阴性");
+	EC_SetMenuInfo(0200, "清扫");
+	EC_SetMenuInfo(0201, "阳性");
+	EC_SetMenuInfo(0202, "阴性");
+	EC_BuildDynamicMenu;
 }
 
-#undef SetMenuInfoTemp
 
 void CManagerDlg::OnBnClickedSurgeryGland()
 {
@@ -761,6 +730,7 @@ void CManagerDlg::OnBnClickedSurgeryGland()
 		m_GLANDMenuBottomCtrl.SetWindowText(temp);
 	}
 }
+
 
 #define EC_BanInputMethod(id) \
 	HWND hWnd = GetDlgItem(nID)->m_hWnd; \
@@ -786,18 +756,41 @@ void CManagerDlg::OnEnChangeCtcheckCtno()
 	OnlyAgreeNo(IDC_CTCHECK_CTNO);
 }
 
+
 void CManagerDlg::OnlyAgreeNo(int nID)
 {
 	EC_OnlyAgreeNo(nID);
 }
+
 
 void CManagerDlg::OnEnChangePathologyNo()
 {
 	OnlyAgreeNo(IDC_PATHOLOGY_NO);
 }
 
+
 void CManagerDlg::OnEnChangeFollowUpRecordsCtNo()
 {
 	OnlyAgreeNo(IDC_FOLLOW_UP_RECORDS_CT_NO);
+}
+
+
+void CManagerDlg::OnSavedataMenu()
+{
+	
+}
+
+//热键消息
+void CManagerDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
+{
+	switch (nHotKeyId)
+	{
+	case IDR_SAVEDATA_MENU:
+		OnSavedataMenu();
+		break;
+	default:
+		break;
+	}
+	CDialogEx::OnHotKey(nHotKeyId, nKey1, nKey2);
 }
 

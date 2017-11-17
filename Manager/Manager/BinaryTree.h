@@ -98,22 +98,11 @@ public:
 		return Get();
 	}
 	pcT Up(){ return m_p = m_p->up, Get(); }
-	pcT Root(){ return m_p = &m_root, m_p; }
+	pcT Root(){ return m_p = &m_root, Get(); }
 	void SetLeft(T _val){ AllocItemT(temp, _val); temp->up = m_p, m_p->left = temp; }
 	void SetRight(T _val){ AllocItemT(temp, _val); temp->up = m_p, m_p->right = temp; }
 	void SetRoot(T _val){ m_root.data = _val; }
-	pcT Goto(CString _opera)
-	{
-		int str_len = _opera.GetLength();
-		for (int i = 0, Root(); i < str_len; ++i)
-		{
-			char term = _opera.GetAt(i);
-			if (term != 48 && term != 49) opera_error();
-			term - 48 ? Right() : Left();
-		}
-		return str_len ? Get() : nullptr;
-	}
-	//表示该节点有左节点
+	//该节点有左节点
 	bool hasLeft()const { return m_p->left; }
 	//表示该节点有右节点
 	bool hasRight()const { return m_p->right; }
@@ -124,6 +113,7 @@ public:
 	void * GetMark()const { return m_p; }
 	void GotoMark(void * mark){ m_p = (pitem)mark; }
 };
+
 #undef AllocItemT
 #undef AllocItemO
 #undef pcT

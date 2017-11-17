@@ -3,12 +3,21 @@
 //
 
 #pragma once
+#include "Manager.h"
 #include "EasySize.h"
 #include "afxmenubutton.h"
 #include "EasyStaticCtrlConnect.h"
 #include "DynamicMenu.h"
 #include "MyMFCMenuButton.h"
+#include <imm.h>
+#include <stack>
 
+typedef struct ManagerData
+{
+	CString data;
+	CString title;
+	CString IDName;
+}manadata;
 
 // CManagerDlg 对话框
 class CManagerDlg : public CDialogEx
@@ -23,11 +32,14 @@ public:
 
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
-
+public:
+	HICON m_hIcon; 
+	POINT old;
+	CMyMFCMenuButton m_ADEMenuBottomCtrl;
+	CMyMFCMenuButton m_GLANDMenuBottomCtrl;
+	std::vector<manadata> m_ManagerData;
 // 实现
 protected:
-	HICON m_hIcon;
-
 	// 生成的消息映射函数
 	virtual BOOL OnInitDialog();
 	afx_msg void OnPaint();
@@ -43,12 +55,9 @@ public:
 	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	void RestoreGroup();
-	POINT old;
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnSizing(UINT fwSide, LPRECT pRect);
-	CMyMFCMenuButton m_ADEMenuBottomCtrl;
 	afx_msg void OnConditionQueryMenu();
-	CMyMFCMenuButton m_GLANDMenuBottomCtrl;
 	afx_msg void OnOutputDataid();
 	afx_msg void OnBnClickedPathologyMfcmenubutton();
 	void InitADEMenuBottomCtrl();
@@ -59,6 +68,8 @@ public:
 	void OnlyAgreeNo(int nID);
 	afx_msg void OnEnChangePathologyNo();
 	afx_msg void OnEnChangeFollowUpRecordsCtNo();
+	afx_msg void OnSavedataMenu();
+	afx_msg void OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2);
 };
 
 #define EC_OnlyAgreeNo(id) \
@@ -91,3 +102,4 @@ public:
 		ImmReleaseContext(hWnd, m_hImc); \
 		::SetFocus(hWnd); \
 	}
+

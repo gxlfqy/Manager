@@ -47,7 +47,8 @@ BOOL CDataIDDlg::OnInitDialog()
 	::RegisterHotKey(GetSafeHwnd(), IDC_OUTTXT, MOD_ALT, 'O');
 	CString IDTitle;
 	CString IDName;
-	for (int i = 0; i < __EF__StaticCtrl->size(); ++i)
+	int __EF__StaticCtrl_len = __EF__StaticCtrl->size();
+	for (int i = 0; i < __EF__StaticCtrl_len; ++i)
 	{
 		IDTitle = __EF__StaticCtrl->at(i).title;
 		IDName = __EF__StaticCtrl->at(i).IDName;

@@ -9,6 +9,7 @@
 #include <assert.h>
 
 #define ES_ONLYINPUTNO 0x4000L
+#define ES_NOINTABLE 0x8000L
 
 namespace ControlType
 {
@@ -21,7 +22,8 @@ namespace ControlType
 	};
 	enum D
 	{
-		BASICINFO = 0,
+		NONE = 0,
+		BASICINFO = 1,
 		CTCHECK,
 		PNR,
 		OLD,
@@ -103,6 +105,52 @@ struct tag_ef_connect
 	void SetAttr(int _attr){ attr = _attr; }
 };
 
+//EasyStaticCtrlConnect ÀàµÄµü´úÆ÷
+class Iterator
+{
+private:
+	int Iterator_index;
+public:
+	Iterator() :Iterator_index(0)
+	{
+
+	}
+};
+
+class EasyStaticCtrlConnect
+{
+private:
+	EasyStaticCtrlConnect()
+	{
+		m_StaticCtrlList.clear();
+	}
+	EasyStaticCtrlConnect(const EasyStaticCtrlConnect &){ }
+	EasyStaticCtrlConnect & operator = (const EasyStaticCtrlConnect &);
+	static tag_dataType m_TableInfo;
+	std::vector<tag_ef_connect> m_StaticCtrlList;
+public:
+	friend class ManagerDlg;
+	static EasyStaticCtrlConnect & GetInstance()
+	{
+		static EasyStaticCtrlConnect instance;
+		return instance;
+	}
+	static tag_dataType GetTableData()
+	{
+		return m_TableInfo;
+	}
+private:
+	void AddSub(tag_ef_connect staticCtrlInfo)
+	{
+		m_StaticCtrlList.push_back(staticCtrlInfo);
+	}
+public:
+	tag_ef_connect GetAt(int index)
+	{
+		return m_StaticCtrlList.at(index);
+	}
+};
+
 #define CREATE_EASYSTATICCTRLCONNECT struct tag_dataType g_DataType;
 
 #define DECLARE_EASYSTATICCTRLCONNECT \
@@ -116,7 +164,7 @@ struct tag_ef_connect
 		static std::vector<int> StaticCtrlDistance; \
 		CRect StaticRect, ControlRect; \
 		int nCountor = __EF__StaticCtrl.size(); \
-		if(bFlag) \
+		if (bFlag) \
 		{ \
 			for (int i = 0; i < nCountor; ++i) \
 			{ \
@@ -176,14 +224,17 @@ struct tag_ef_connect
 		{ \
 			temp.SetAttr(int(attribute)); \
 		} \
-		temp.nTable = g_DataType.GetTableIndex(temp.IDName); \
+		if (temp.attr != ES_NOINTABLE) \
+			temp.nTable = g_DataType.GetTableIndex(temp.IDName); \
+		else \
+			temp.nTable = 0; \
 		assert(temp.nTable != -1); \
 		__EF__StaticCtrl.push_back(temp);
 
 #define END_EASYSTATICCTRLCONNECT_MAP \
 	}
 
-#define ESCC_CONNECT_MFCMENU(staticID, ctrlID, ctrlName, DMenuInfo)  \
+#define ESCC_CONNECT_MFCMENU(staticID, ctrlID, ctrlName, DMenuInfo, o)  \
 		temp.SetData(staticID, ctrlID, ctrlName); \
 		temp.IDName.Format(L""##L#ctrlID); \
 		temp.IDName = temp.IDName.Mid(4, temp.IDName.GetLength()); \
@@ -195,7 +246,11 @@ struct tag_ef_connect
 		temp.MFCMenuInfo = new CDynamicMenu; \
 		if (temp.MFCMenuInfo == nullptr) exit(1); \
 		*(temp.MFCMenuInfo) = DMenuInfo; \
-		temp.nTable = g_DataType.GetTableIndex(temp.IDName); \
+		temp.hMenu = temp.MFCMenuInfo->m_hDMenu; \
+		if (o == ES_NOINTABLE) \
+			temp.nTable = 0; \
+		else \
+			temp.nTable = g_DataType.GetTableIndex(temp.IDName); \
 		assert(temp.nTable != -1); \
 		__EF__StaticCtrl.push_back(temp);
 	 
